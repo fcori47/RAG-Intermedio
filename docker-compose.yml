@@ -1,0 +1,31 @@
+version: '3.6'
+
+services:
+    chroma:
+      image: chromadb/chroma:0.5.18.dev9
+      volumes:
+        - index_data:/chroma/.chroma/index
+      ports:
+        - 8000:8000
+      networks:
+        - net
+    
+    ui:
+      build: ./app
+      ports:
+        - 8080:8080
+      volumes:
+        - ./app:/app
+      depends_on:
+        - chroma
+      environment:
+        - HOST=chroma
+        - PORT=8000
+      networks:
+        - net
+
+volumes:
+  index_data:
+
+networks:
+  net:
